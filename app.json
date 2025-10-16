@@ -1,0 +1,52 @@
+
+{
+  "expo": {
+    "name": "Mend",
+    "slug": "mend",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/mendi-logo.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/mendi-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0F172A"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mend.app",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Mend uses Face ID to secure your financial data",
+        "UIBackgroundModes": ["fetch", "remote-notification"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/mendi-logo.png",
+        "backgroundColor": "#0F172A"
+      },
+      "package": "com.mend.app",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.USE_FINGERPRINT",
+        "android.permission.USE_BIOMETRIC"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/mendi-logo.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/mendi-logo.png",
+          "color": "#6EE7B7"
+        }
+      ]
+    ]
+  }
+}
