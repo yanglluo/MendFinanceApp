@@ -1,185 +1,88 @@
+# Mend
 
-# Mend - Financial Accountability App
+**A budgeting prototype that makes spending feedback easier to face.**
 
-Mend is a React Native mobile application designed to help students build mindful money habits with AI-powered insights and an empathetic mascot coach named "Mendi."
+Mend is a React Native app for students to record expenses, track a budget, and understand spending patterns. Its central product idea is adjustable transparency: the same information can appear as precise numbers, gentler trends, or habit-focused feedback.
 
-## Features
+**Built by [Yang Luo](https://github.com/yanglluo)** · [Portfolio](https://povhiringyang.vercel.app/)
 
-### Core Functionality
-- **Authentication**: Secure login and signup system
-- **Onboarding Flow**: Budget setup, category selection, and transparency mode preference
-- **Dashboard**: Main view with mascot Mendi displaying current status and insights
-- **Transaction Management**: Manual entry and tracking of expenses
-- **Budget Tracking**: Visual progress indicators with period-based tracking (semester/monthly/weekly)
-- **Category System**: Preset categories (Food, Rides, Fun, etc.) + custom categories
-- **AI Insights**: Rule-based pattern detection providing behavioral, predictive, and habit insights
-- **Mascot Emotional States**: Mendi reacts to user behavior (happy, neutral, concerned, worried, proud, excited)
-- **Transparency Modes**: Three modes that transform the UI and feedback style
-  - **Full**: Precise data and detailed insights
-  - **Soft**: Trends with encouraging language
-  - **Hidden**: Focus on habits, minimal numbers
-- **Proactive Nudges**: Push notifications for spending alerts and check-ins
-- **Settings**: Customize preferences, transparency mode, and budget settings
+## The experience
 
-### Technical Features
-- **Local-First Architecture**: SQLite database with secure storage
-- **E2EE Cloud Sync**: Optional encrypted backup (architecture ready)
-- **Cross-Platform**: iOS and Android compatible
-- **Liquid-Glass UI**: Futuristic design with frosted glass cards and mint+lilac gradients
-- **Smooth Animations**: Fade, pulse, and glide effects throughout
+1. Enter the prototype's sign-up/login flow and set a budget and feedback preference.
+2. Add an expense with a merchant, category, amount, and date.
+3. Review spending and budget progress on the dashboard.
+4. Explore rules-based insights and Mendi, the mascot whose messages respond to budget usage.
+5. Switch between **Full**, **Soft**, and **Hidden** feedback in settings.
 
-## Technology Stack
+Mend is a mobile product prototype with local persistence. Authentication is mocked; use synthetic accounts and expense data when exploring it.
 
-- **Framework**: React Native with Expo
-- **Navigation**: React Navigation (Stack + Bottom Tabs)
-- **Database**: Expo SQLite
-- **Secure Storage**: Expo Secure Store
-- **Notifications**: Expo Notifications
-- **UI Components**: Custom glass-morphism design
-- **Animations**: React Native Animated API
+## Engineering highlights
 
-## Project Structure
+| Area | Implementation | Product/engineering tradeoff |
+| --- | --- | --- |
+| Local data | Expo SQLite stores users, categories, transactions, and insights behind a database service | Supports local persistence without requiring a hosted backend; multi-user isolation and cloud sync remain future work |
+| Feedback modes | A shared insight engine frames messages for Full, Soft, and Hidden modes | Changes how feedback is presented without requiring separate analysis pipelines |
+| Spending insights | Deterministic rules for merchant frequency, spending days, budget projections, and habit patterns | Inspectable logic with no external model/API requirement; forecasts are simplified heuristics |
+| Navigation | React Navigation stack for account/onboarding flows and tabs for Home, Transactions, Categories, and Insights | Keeps the everyday loop separate from setup and secondary screens |
+| UI and reminders | Reusable cards, budget progress, mascot feedback, and Expo notification helpers | Connects visual feedback to spending state; notification behavior depends on device permissions |
 
-```
-Mend/
-├── assets/
-│   └── mendi-logo.png
-├── src/
-│   ├── components/
-│   │   ├── Button.tsx
-│   │   ├── CategoryCard.tsx
-│   │   ├── GlassCard.tsx
-│   │   ├── GradientBackground.tsx
-│   │   ├── MascotBubble.tsx
-│   │   ├── ProgressBar.tsx
-│   │   └── TransactionItem.tsx
-│   ├── constants/
-│   │   ├── categories.ts
-│   │   └── theme.ts
-│   ├── screens/
-│   │   ├── AddTransactionScreen.tsx
-│   │   ├── CategoriesScreen.tsx
-│   │   ├── DashboardScreen.tsx
-│   │   ├── InsightsScreen.tsx
-│   │   ├── LoginScreen.tsx
-│   │   ├── OnboardingScreen.tsx
-│   │   ├── SettingsScreen.tsx
-│   │   ├── SignupScreen.tsx
-│   │   └── TransactionsScreen.tsx
-│   ├── services/
-│   │   ├── aiEngine.ts
-│   │   ├── auth.ts
-│   │   ├── database.ts
-│   │   └── notifications.ts
-│   └── types/
-│       └── index.ts
-├── App.tsx
-├── app.json
-└── package.json
+## Architecture
+
+```text
+Screens → database service → local SQLite records
+Transactions + budget + feedback mode → insight engine → insights and mascot feedback
+Dashboard/settings → notification service → device notification scheduling
+Prototype account flow → SecureStore → local mock session
 ```
 
-## Installation
+### Start with these files
 
-1. **Clone the repository**
-   ```bash
-   cd /home/ubuntu/code_artifacts/Mend
-   ```
+- [App.tsx](App.tsx): initialization, authentication/onboarding state, and navigation composition.
+- [Database service](src/services/database.ts): schema creation, SQL operations, and row-to-domain mapping.
+- [Insight engine](src/services/aiEngine.ts): rules, forecasts, feedback framing, and mascot state. Despite the filename, this is not an LLM integration.
+- [Dashboard](src/screens/DashboardScreen.tsx): combines transactions, budget progress, insights, and reminders.
+- [Settings](src/screens/SettingsScreen.tsx): feedback preferences and notification controls.
+- [Auth service](src/services/auth.ts): clearly scoped mock login and local session storage.
+- [UI components](src/components) and [theme](src/constants/theme.ts): shared visual building blocks.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## Stack
 
-3. **Start the development server**
-   ```bash
-   npm start
-   ```
+Expo SDK 54 · React Native 0.81 · React 19.1 · TypeScript · React Navigation 7 · Expo SQLite · Expo SecureStore · Expo Notifications
 
-4. **Run on specific platforms**
-   ```bash
-   # iOS (requires macOS)
-   npm run ios
-   
-   # Android
-   npm run android
-   
-   # Web
-   npm run web
-   ```
+## Run locally
 
-## AI Insights Engine
+Use a Node.js version compatible with Expo SDK 54; its [release notes](https://expo.dev/changelog/sdk-54) specify a minimum of `20.19.4`. Use an SDK 54-compatible Expo client or development build, plus an iOS Simulator or Android emulator/device.
 
-Mend's AI engine analyzes transaction patterns and generates personalized insights:
+```bash
+git clone https://github.com/yanglluo/MendFinanceApp.git
+cd MendFinanceApp
+npm install
+npm start
+```
 
-### Insight Types
-1. **Behavioral Patterns**: Day-of-week spending, recurring merchants, habit detection
-2. **Predictive Budget**: Forecast spending trends and budget alerts
-3. **Micro-Habit Triggers**: Emotional and situational spending patterns
-4. **Progress Tracking**: Consistency streaks and improvement metrics
-5. **Educational**: Redundancy detection, fee alerts, financial literacy tips
+Platform scripts:
 
-### Transparency Mode Framing
-All insights are dynamically framed based on the user's selected transparency mode:
-- **Full**: "You spent $132 on takeout this month, down 18% from last."
-- **Soft**: "Your food spending is easing — you're finding balance again."
-- **Hidden**: "Your routines are stabilizing — that's what matters most right now."
+```bash
+npm run ios       # Expo on iOS Simulator; requires macOS and Xcode
+npm run android   # Expo on an Android emulator/device
+```
 
-## Mascot System
+`App.tsx` imports `expo-font` and `@expo/vector-icons`, but the current package manifest does not declare them directly. If dependency resolution reports either missing package, add SDK-compatible versions in your local checkout:
 
-Mendi's emotional state changes based on spending behavior:
-- **Happy**: Under 50% budget usage
-- **Neutral**: 50-75% budget usage
-- **Concerned**: 75-90% budget usage
-- **Worried**: 90%+ budget usage
+```bash
+npx expo install expo-font @expo/vector-icons
+```
 
-Each emotion comes with contextual messages to encourage mindful spending.
+No bank credentials, cloud account, or external model API key is required for the current mock/local flow. The repository also exposes `npm run web`, but its native storage dependencies mean browser support should be evaluated separately.
 
-## Database Schema
+## Current scope and next steps
 
-### Users
-- id, email, name, created_at
-- budget_period, transparency_mode, budget_amount
-- semester_start_date, semester_end_date
-- enable_notifications, enable_cloud_sync
+- **Implemented in source:** manual expense entry, local database services, budget views, feedback modes, rules-based insights, and notification scheduling helpers.
+- **Prototype boundaries:** login does not validate credentials against a backend. SecureStore holds the mock session; this does not establish encryption of the SQLite expense database. The cloud-sync preference is a UI/state placeholder, not a working encrypted backup service.
+- **Next engineering work:** real authentication and account-scoped data, accurate budget-period calculations, tested backup/sync, and device-level accessibility and notification checks. The budget forecast currently uses a simplified 30-day model.
 
-### Categories
-- id, name, icon, color, budget, is_custom
+## Validation
 
-### Transactions
-- id, amount, merchant, category_id
-- date, time, note, is_recurring
+The package currently defines start/platform scripts but no automated test or lint script. To review the core loop, use synthetic data to create an account, finish onboarding, add an expense, restart the app, and compare the three feedback modes. Check notification permission denial as well as permission approval.
 
-### AI Insights
-- id, type, title, message, emotion
-- timestamp, priority, actionable
-
-## Future Enhancements
-
-- Plaid integration for automatic transaction tracking
-- Multi-device sync with E2EE
-- Buddy accountability features
-- Advanced AI with machine learning models
-- Biometric authentication
-- Export and reporting features
-
-## Design Philosophy
-
-Mend focuses on **accountability without anxiety**:
-- Calm, intelligent, and human interface
-- Liquid-glass aesthetic for modern feel
-- Smooth animations for delightful UX
-- Empathetic language over judgemental tones
-- Progressive disclosure of information
-- Mindful color coding (green = calm, amber = caution, rose = refocus)
-
-## License
-
-MIT License
-
-## Version
-
-1.0.0
-
----
-
-Built with ❤️ for students learning mindful money management
+Automated coverage for database mapping, budget calculations, and insight framing is a useful next step. iOS/Android runtime behavior and store release readiness should be verified independently.
